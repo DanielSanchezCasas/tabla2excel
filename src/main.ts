@@ -8,6 +8,7 @@ import {
   type Plantilla,
 } from './nucleo/plantilla';
 import { FakeOcrEngine, type OcrEngine, type RespuestasSimuladas } from './ocr/ocr';
+import { OcrConDigitos } from './ocr/digitos';
 import { TesseractOcr } from './ocr/tesseract';
 import { detectarColumnas, ErrorFoto, procesarFoto } from './pipeline';
 import { habilitarCarga, prepararCarga, prepararSelector } from './ui/carga';
@@ -36,7 +37,7 @@ let ocr: OcrEngine | null = null;
 const obtenerOcr = () =>
   (ocr ??= window.__tabla2excelOcrSimulado
     ? new FakeOcrEngine(window.__tabla2excelOcrSimulado)
-    : new TesseractOcr(URL_VENDOR, plantilla.idioma_ocr));
+    : new OcrConDigitos(new TesseractOcr(URL_VENDOR, plantilla.idioma_ocr)));
 const obtenerOpenCV = () => cargarOpenCV(`${URL_VENDOR}opencv.js`);
 
 const mensajeDeError = (e: unknown) => {

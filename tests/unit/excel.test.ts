@@ -46,7 +46,7 @@ const valores = (hoja: ExcelJS.Worksheet, n: number) => (hoja.getRow(n).values a
 
 describe('generarExcel', () => {
   it('hoja Datos: Fecha, N.º foto y las 7 columnas exportadas, con tipos reales', async () => {
-    const libro = await leer([foto(1, [fila(0, ['356', 'NC33', '14', '3', '1', '', 'Juan Rozo'])])]);
+    const libro = await leer([foto(1, [fila(0, ['356', 'NC33', '14', '3', '1', '', 'Ana Mora'])])]);
     const datos = libro.getWorksheet('Datos')!;
     expect(valores(datos, 1)).toEqual([
       'Fecha',
@@ -63,7 +63,7 @@ describe('generarExcel', () => {
     expect(v[0]).toEqual(new Date(Date.UTC(2026, 9, 31)));
     expect(v.slice(1, 7)).toEqual([1, 356, 'NC33', 14, 3, 1]);
     expect(v[7]).toBeUndefined(); // Varas vacía
-    expect(v[8]).toBe('Juan Rozo');
+    expect(v[8]).toBe('Ana Mora');
     expect(datos.getCell('A2').numFmt).toBe('dd/mm/yyyy');
     expect(datos.getRow(1).font?.bold).toBe(true);
     expect(datos.views[0]).toMatchObject({ state: 'frozen', ySplit: 1 });

@@ -26,10 +26,15 @@ describe.each(['recta.png', 'rotada.png', 'perspectiva.png', 'sombra.png'])(
       const tabla = detectarTabla(cv, leer(archivo), 14);
       expect(tabla.columnas).toBe(14);
       expect(tabla.filas).toBe(1 + simulado.filas);
-      expect(tabla.cajaFecha.y + tabla.cajaFecha.alto).toBeLessThanOrEqual(tabla.celdas[0][0].y);
-      expect(
-        cv.countNonZero(tabla.tinta.roi(new cv.Rect(0, 0, tabla.cajaFecha.ancho, tabla.cajaFecha.alto))),
-      ).toBeGreaterThan(200);
+      // La caja de la fecha está encima de la tabla; solo entra un poco en el encabezado,
+      // porque la fecha manuscrita suele montarse sobre la línea superior
+      const encabezado = tabla.celdas[0][0];
+      expect(tabla.cajaFecha.y).toBeLessThan(encabezado.y);
+      expect(tabla.cajaFecha.y + tabla.cajaFecha.alto).toBeLessThanOrEqual(
+        encabezado.y + encabezado.alto / 2,
+      );
+      const { x, y, ancho, alto } = tabla.cajaFecha;
+      expect(cv.countNonZero(tabla.tinta.roi(new cv.Rect(x, y, ancho, alto)))).toBeGreaterThan(200);
     });
 
     it('clasifica celdas: con tinta, guion y vacías', () => {

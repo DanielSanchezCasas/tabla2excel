@@ -111,7 +111,7 @@ export async function procesarFoto(
   await siguienteCuadro();
   let tabla: TablaDetectada;
   try {
-    tabla = detectarTabla(cv, rgba, plantilla.columnas.length);
+    tabla = detectarTabla(cv, rgba, plantilla.columnas.length, plantilla.filas_encabezado);
   } catch (e) {
     throw new ErrorFoto((e as Error).message);
   } finally {
