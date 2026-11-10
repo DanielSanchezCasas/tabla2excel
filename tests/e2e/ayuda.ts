@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-import type { Download, Page } from '@playwright/test';
+import { expect, type Download, type Page } from '@playwright/test';
 
 export const FIXTURES = 'tests/fixtures';
 export const simulado = JSON.parse(readFileSync(`${FIXTURES}/ocr-simulado.json`, 'utf-8'));
@@ -18,6 +18,8 @@ export async function abrir(page: Page, cambios: Record<string, unknown> = {}) {
 }
 
 export async function subir(page: Page, imagen: string) {
+  // La carga se habilita cuando la app termina de iniciar
+  await expect(page.locator('#archivo')).toBeEnabled();
   await page.locator('#archivo').setInputFiles(`${FIXTURES}/imagenes/${imagen}`);
 }
 

@@ -29,7 +29,8 @@
       <section id="convertir">
         <section id="carga" class="tarjeta">
           <h2>1. Pasa una foto de la planilla</h2>
-          <div id="zona" class="zona">
+          <!-- Deshabilitada hasta que la app termina de iniciar (si no, una foto elegida muy rápido se perdería) -->
+          <div id="zona" class="zona deshabilitada">
             <label class="boton principal">
               Tomar foto
               <input
@@ -38,11 +39,12 @@
                 accept="image/jpeg,image/png,image/webp"
                 capture="environment"
                 hidden
+                disabled
               />
             </label>
             <label class="boton">
               Elegir foto
-              <input id="archivo" type="file" accept="image/jpeg,image/png,image/webp" hidden />
+              <input id="archivo" type="file" accept="image/jpeg,image/png,image/webp" hidden disabled />
             </label>
             <p class="ayuda">o arrastra la foto aquí. De frente, con buena luz y con la fecha dentro.</p>
           </div>
