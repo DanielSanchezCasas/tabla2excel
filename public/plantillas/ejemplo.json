@@ -1,0 +1,19 @@
+{
+  "id": "ejemplo",
+  "nombre": "Registro de ventas (ejemplo, cámbialo por tu tabla)",
+  "idioma_ocr": "spa",
+  "regional": {
+    "separador_decimal": ",",
+    "separador_miles": ".",
+    "formato_fecha": "dd/MM/yyyy"
+  },
+  "filas_encabezado": 1,
+  "umbral_confianza": 70,
+  "columnas": [
+    { "nombre": "Fecha", "tipo": "fecha", "obligatoria": true },
+    { "nombre": "Descripción", "tipo": "texto" },
+    { "nombre": "Cantidad", "tipo": "entero" },
+    { "nombre": "Valor unitario", "tipo": "moneda" },
+    { "nombre": "Total", "tipo": "moneda" }
+  ]
+}

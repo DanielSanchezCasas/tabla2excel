@@ -1,0 +1,36 @@
+{
+  "id": "talegas",
+  "nombre": "Planilla de entrega y recepción de talegas",
+  "idioma_ocr": "spa",
+  "regional": {
+    "separador_decimal": ",",
+    "separador_miles": ".",
+    "formato_fecha": "dd/MM/yyyy"
+  },
+  "filas_encabezado": 1,
+  "umbral_confianza": 70,
+  "columnas": [
+    { "nombre": "Hora", "tipo": "texto", "exportar": false },
+    { "nombre": "Talega No.", "tipo": "entero" },
+    {
+      "nombre": "Carro No.",
+      "tipo": "texto",
+      "caracteres": "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    },
+    { "nombre": "Tacos", "tipo": "entero" },
+    { "nombre": "Fundas", "tipo": "entero" },
+    { "nombre": "Paraguas", "tipo": "entero" },
+    { "nombre": "Varas", "tipo": "entero" },
+    {
+      "nombre": "Nombre del Socio",
+      "tipo": "texto",
+      "caracteres": "ABCDEFGHIJKLMNÑOPQRSTUVWXYZÁÉÍÓÚÜabcdefghijklmnñopqrstuvwxyzáéíóúü .'"
+    },
+    { "nombre": "Entrega Cuarto de Tacos", "tipo": "texto", "exportar": false },
+    { "nombre": "Recibe Socio / Caddie", "tipo": "texto", "exportar": false },
+    { "nombre": "No. Caddie", "tipo": "entero", "exportar": false },
+    { "nombre": "Recibe Cuarto de Tacos", "tipo": "texto", "exportar": false },
+    { "nombre": "Entrega Socio / Caddie", "tipo": "texto", "exportar": false },
+    { "nombre": "Observaciones", "tipo": "texto", "exportar": false }
+  ]
+}

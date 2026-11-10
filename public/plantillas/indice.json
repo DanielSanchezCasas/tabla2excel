@@ -1,0 +1,7 @@
+{
+  "defecto": "talegas",
+  "plantillas": [
+    { "id": "talegas", "nombre": "Planilla de talegas" },
+    { "id": "ejemplo", "nombre": "Registro de ventas (ejemplo)" }
+  ]
+}
