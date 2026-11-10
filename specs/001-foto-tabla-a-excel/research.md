@@ -13,7 +13,8 @@
 - **Alternativas**: PaddleOCR / TrOCR vía ONNX Runtime Web o transformers.js (mejores con manuscrito, pero modelos de 20–250 MB → rompen el presupuesto de carga); APIs en la nube (violan principio I). La interfaz `OcrEngine` permite cambiarlo después.
 
 ## Decisión 2: Visión (perspectiva y cuadrícula)
-- **Decisión**: OpenCV.js (`@techstark/opencv-js` 5, 13,3 MB / 3,7 MB gzip) en el **hilo principal**, cargado con `<script>` solo al procesar la primera foto y cacheado por el service worker.
+- **Decisión (revisada con fotos reales)**: en vez de buscar el contorno exterior y enderezar la perspectiva, se endereza la rotación (ángulo dominante con Hough, normalizado a ±90°; si el encabezado —la fila más alta— queda abajo, se gira 180°) y se detecta **cada línea por franjas** (picos del perfil en 12 franjas, unidos entre franjas vecinas), lo que sigue la curvatura del papel. Se descartan las líneas que no cruzan las de la otra familia y las filas finas de los extremos. Las celdas se amplían por encima y por debajo de sus líneas (se escribe sobre ellas) y solo cuentan los trazos cuyo centro cae dentro de la fila.
+- **Decisión original**: OpenCV.js (`@techstark/opencv-js` 5, 13,3 MB / 3,7 MB gzip) en el **hilo principal**, cargado con `<script>` solo al procesar la primera foto y cacheado por el service worker.
 - **Motivo**: la planilla tiene cuadrícula completa (aclaración 1) → la detección morfológica de líneas es fiable. Se descartó el Web Worker durante la implementación: Vite exige cargar `opencv.js` de forma distinta en desarrollo y en build (worker módulo vs clásico), lo que es frágil; la detección tarda < 1 s y se muestra el progreso, así que congelar la página ese instante es aceptable. El OCR (lo lento) sí va en workers.
 - **Notas de OpenCV.js 5**: el módulo es una promesa; `Mat.clone()` sobre un ROI devuelve ceros (usar `copyTo`); no trae `findNonZero`.
 - **Alternativa**: implementación propia en JS de umbral/proyecciones (más liviana, menos robusta). Descartada: se prioriza fiabilidad sobre tamaño.
@@ -38,6 +39,18 @@ Lista blanca por columna (`0123456789` en enteros; `A-Z0-9` en Carro No.; letras
 - **Plan B si los números quedan por debajo de ~80 %**: clasificador de dígitos pequeño (ONNX, < 1 MB, tipo MNIST) solo para columnas `entero`, detrás de `OcrEngine`. Requiere justificar `onnxruntime-web` como dependencia nueva.
 - **Descartado**: lista de socios y rangos numéricos (aclaraciones 9 y 10, decisión del usuario).
 - **Primera medición (2026-11-10, fixture SINTÉTICA, no manuscrito real)**: con el OCR real en Chromium, 102/112 celdas correctas (91 %), fecha "31 octubre 2026" leída bien, foto completa en ~2 s en portátil. Es solo una referencia: la letra sintética es mucho más regular que la manuscrita real. La medición que decide (T028) requiere las fotos reales en `fotos-reales/`.
+
+### Resultados con fotos reales (2026-11-10, fotos de WhatsApp de ~1600 px)
+- **Detección de la tabla**: reescrita (ver Decisión 2) → encuentra las 14 columnas y todas las filas en las 5 fotos reales probadas (de lado, al revés, papel curvado, pinza, marcas fuera de la tabla, última fila cortada).
+- **Tesseract** con manuscrito: inservible. Números ~3/16 aun con buenos recortes; nombres ilegibles.
+- **Plan B aplicado**: clasificador de dígitos MNIST (ONNX Model Zoo, MIT) ejecutado en JS puro (`src/ocr/digitos.ts`, sin dependencias) para columnas `entero`. Talega ~5/13 en una foto. La seguridad se mide con 7 variantes por dígito (la red sola da >70 % aunque se equivoque): ~88 % de los errores quedan resaltados.
+- **TrOCR en el navegador** (transformers.js, small 64 MB y base 340 MB): 0/25 nombres; inventa frases en inglés. Descartado.
+- **Ollama + `qwen2.5vl:7b` (foto entera, una sola petición, JSON)** en Mac M2 16 GB, ~70 s/foto: **Talega 25/25, Carro 18/25, Nombre 11/25 exactos** (~18 % de letras mal; el resto casi bien). Celda por celda es peor y más lento. La instrucción que mejor funciona está en `scripts/evaluar-ollama.mjs` (pedir todas las columnas exportadas evita que un Carro vacío se rellene con la columna vecina).
+
+### Próximos pasos (decisión del dueño: probar Ollama en PC con Windows, RTX 3060 12 GB, 16 GB RAM)
+1. Comparar modelos que caben en 12 GB de VRAM con `node scripts/evaluar-ollama.mjs "fotos-reales/<foto>" <modelo>`: `qwen3-vl:8b`, `gemma4` (variante 9,5 GB), `deepseek-ocr`, `glm-ocr`, frente a `qwen2.5vl:7b`.
+2. Integrar en la app, solo en PC: si la página detecta Ollama en `localhost`, ofrecer "Leer con IA local". Requiere `OLLAMA_ORIGINS=https://danielsanchezcasas.github.io`, añadir `http://localhost:11434` a `connect-src` de la CSP y anotar en la constitución que las conexiones a `localhost` están permitidas (los datos no salen del equipo).
+3. Nombres exactos: lista de socios cargada en el dispositivo (talega → nombre), aprovechando que la talega se lee bien. Pendiente saber si cada socio tiene talega fija y si existe la lista.
 
 ## Decisión 8: Fecha de la planilla
 - **Decisión**: OCR de la franja entre el borde superior de la página corregida y el borde superior de la tabla; parser que acepta `d mes aaaa` con nombres de mes en español (con tolerancia a errores: distancia de edición ≤ 2 contra los 12 meses) y `dd/mm/aaaa`. Siempre editable y obligatoria antes de añadir la foto.

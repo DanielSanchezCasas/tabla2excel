@@ -54,5 +54,13 @@ Playwright no arranca en algunas versiones de macOS.
 **Fotos reales**: guárdalas en `fotos-reales/` (está en `.gitignore`). Tienen datos personales
 y el repositorio es público: nunca las subas.
 
+### Probar la lectura con IA local (Ollama)
+
+1. Instala [Ollama](https://ollama.com/download) y descarga un modelo de visión, p. ej. `ollama pull qwen2.5vl:7b`.
+2. Copia a `fotos-reales/` la foto y su referencia `<foto>.verdad.json` (`[["talega","carro","nombre"], ...]`).
+3. Con Ollama en marcha: `node scripts/evaluar-ollama.mjs "fotos-reales/<foto>.jpeg" qwen2.5vl:7b`
+
+Resultados y próximos pasos en [research.md](specs/001-foto-tabla-a-excel/research.md) (Decisión 7).
+
 La especificación, el plan y las decisiones están en [`specs/001-foto-tabla-a-excel/`](specs/001-foto-tabla-a-excel/)
 (ver [LEEME.md](LEEME.md)).

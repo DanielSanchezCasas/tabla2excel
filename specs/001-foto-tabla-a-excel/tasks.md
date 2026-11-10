@@ -70,7 +70,7 @@ US3 Revisar y corregir · US4 Acumular varias fotos · US5 Crear plantilla.
 - [X] T025 [US1] `src/nucleo/excel.ts`: `generarExcel(fotos: FotoAñadida[], plantilla) → Blob` (recibe datos simples, NO la entidad `Lote`; en US1 se llama con `[{ ...fotoProcesada, numero: 1 }]`); hoja "Datos" (`Fecha` | `N.º foto` | columnas exportadas en orden de plantilla), tipos reales, encabezado en negrita y fijado, filtros, anchos ajustados; nombre `<id_plantilla>_AAAA-MM-DD.xlsx`
 - [X] T026 [US1] `src/ui/carga.ts` y `src/ui/progreso.ts`: "Elegir foto", arrastrar y "Tomar foto" (`<input type="file" accept="image/jpeg,image/png,image/webp" capture="environment">`, SIN `multiple`); mensaje HEIC "Este archivo es HEIC y este navegador no lo abre. Usa 'Tomar foto' o conviértelo a JPG."
 - [X] T027 [US1] `src/ui/vistaPrevia.ts` (versión básica): campo Fecha precargado (vacío y en rojo si no se leyó) y tabla de solo lectura con las columnas exportadas; botón "Exportar Excel" deshabilitado sin Fecha; conectar todo en `src/main.ts`
-- [ ] T028 [US1] Validación con fotos reales en local (`fotos-reales/`, NO subir; quickstart.md V6): medir % de celdas correctas por columna exportada y registrar resultados en `specs/001-foto-tabla-a-excel/research.md` (Decisión 7); si los enteros quedan < ~80 %, abrir decisión del plan B (clasificador de dígitos) ANTES de añadir dependencias
+- [X] T028 [US1] Validación con fotos reales en local (hecha 2026-11-10: ver research.md Decisión 7 «Resultados con fotos reales» y «Próximos pasos») (`fotos-reales/`, NO subir; quickstart.md V6): medir % de celdas correctas por columna exportada y registrar resultados en `specs/001-foto-tabla-a-excel/research.md` (Decisión 7); si los enteros quedan < ~80 %, abrir decisión del plan B (clasificador de dígitos) ANTES de añadir dependencias
 
 **Punto de control**: MVP publicado — una foto → Excel; riesgo del manuscrito medido.
 
@@ -129,6 +129,14 @@ US3 Revisar y corregir · US4 Acumular varias fotos · US5 Crear plantilla.
 - [ ] T049 Prueba de usabilidad: enviar el enlace a otra persona sin instrucciones y cronometrar la primera foto (CE-004 < 3 min)
 
 ---
+
+## Fase 9: Lectura con IA local (Ollama, solo PC) — en curso
+
+- [ ] T050 Comparar modelos de visión de Ollama en el PC con Windows (RTX 3060 12 GB) con `scripts/evaluar-ollama.mjs` y elegir uno (research.md Decisión 7, próximos pasos)
+- [ ] T051 Actualizar spec.md y la constitución: conexiones a `localhost` (Ollama) permitidas en PC; los datos no salen del equipo
+- [ ] T052 `src/ocr/ollama.ts`: detectar Ollama en `http://localhost:11434`, enviar la foto entera con la instrucción de `scripts/evaluar-ollama.mjs` y mapear filas JSON a la plantilla; todo marcado para revisión
+- [ ] T053 UI: opción "Leer con IA local" solo si hay Ollama; CSP `connect-src` con `http://localhost:11434`; instrucciones de `OLLAMA_ORIGINS` en README
+- [ ] T054 Nombres: lista de socios cargada en el dispositivo (talega → nombre), si existe
 
 ## Dependencias
 
