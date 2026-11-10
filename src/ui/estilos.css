@@ -1,0 +1,305 @@
+:root {
+  --fondo: #f5f6f4;
+  --tarjeta: #ffffff;
+  --texto: #1c2321;
+  --suave: #5d6763;
+  --borde: #d5dad7;
+  --marca: #1f6f43;
+  --marca-texto: #ffffff;
+  --amarillo: #fff2cc;
+  --rojo: #f8cbad;
+  --rojo-borde: #c0502a;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #141816;
+    --tarjeta: #1d2220;
+    --texto: #e6ebe8;
+    --suave: #a3ada8;
+    --borde: #36403c;
+    --marca: #3fa36b;
+    --amarillo: #5a4a12;
+    --rojo: #6b2a17;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font:
+    16px/1.45 system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 16px 24px;
+}
+
+.cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 12px 16px;
+  background: var(--marca);
+  color: var(--marca-texto);
+}
+
+.cabecera h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.selector-plantilla {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.selector-plantilla select {
+  max-width: 60vw;
+}
+
+.contador {
+  margin-left: auto;
+  font-weight: 600;
+}
+
+.tarjeta {
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+}
+
+.aviso {
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  background: var(--rojo);
+  border: 1px solid var(--rojo-borde);
+}
+
+.aviso.info {
+  background: var(--amarillo);
+  border-color: var(--borde);
+}
+
+.zona {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  border: 2px dashed var(--borde);
+  border-radius: 10px;
+}
+
+.zona.encima {
+  border-color: var(--marca);
+}
+
+.zona.deshabilitada {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.ayuda {
+  color: var(--suave);
+  margin: 4px 0;
+  font-size: 0.9rem;
+}
+
+button,
+.boton {
+  display: inline-block;
+  font: inherit;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--borde);
+  background: var(--tarjeta);
+  color: var(--texto);
+  cursor: pointer;
+  text-decoration: none;
+  min-height: 44px;
+}
+
+button.principal,
+.boton.principal {
+  background: var(--marca);
+  border-color: var(--marca);
+  color: var(--marca-texto);
+  font-weight: 600;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+progress {
+  width: 100%;
+  height: 12px;
+}
+
+.campo-fecha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.campo-fecha label {
+  font-weight: 600;
+}
+
+.campo-fecha input {
+  font: inherit;
+  padding: 6px 8px;
+}
+
+.campo-fecha input:invalid {
+  background: var(--rojo);
+}
+
+.leyenda {
+  font-size: 0.85rem;
+  color: var(--suave);
+}
+
+.muestra {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  border: 1px solid var(--borde);
+}
+
+.tabla-contenedor {
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+th,
+td {
+  border: 1px solid var(--borde);
+  padding: 0;
+  text-align: left;
+}
+
+th {
+  padding: 6px;
+  background: var(--fondo);
+  white-space: nowrap;
+}
+
+td input {
+  width: 100%;
+  min-width: 4.5em;
+  border: 0;
+  padding: 8px 6px;
+  font: inherit;
+  background: transparent;
+  color: inherit;
+}
+
+td.texto input {
+  min-width: 9em;
+}
+
+.baja_confianza,
+td.baja_confianza input {
+  background: var(--amarillo);
+}
+
+.invalida,
+td.invalida input {
+  background: var(--rojo);
+}
+
+td.borrar {
+  width: 1%;
+}
+
+td.borrar button {
+  border: 0;
+  min-height: 36px;
+  padding: 4px 10px;
+  background: transparent;
+}
+
+.cuadricula img,
+.cuadricula canvas {
+  max-width: 100%;
+  height: auto;
+  margin-top: 12px;
+  border: 1px solid var(--borde);
+}
+
+.lote-lista {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.lote-lista li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--borde);
+}
+
+.campos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.campos input,
+#editor-columnas input,
+#editor-columnas select {
+  font: inherit;
+  padding: 6px;
+}
+
+.pie {
+  text-align: center;
+  color: var(--suave);
+  font-size: 0.85rem;
+  padding: 16px;
+}

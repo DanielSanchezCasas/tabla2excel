@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1f6f43" />
+    <link rel="icon" href="/icono.svg" type="image/svg+xml" />
+    <title>tabla2excel</title>
+  </head>
+  <body>
+    <header class="cabecera">
+      <h1>tabla2excel</h1>
+      <label class="selector-plantilla">
+        Plantilla
+        <select id="plantilla"></select>
+      </label>
+      <span id="contador" class="contador" aria-live="polite"></span>
+    </header>
+
+    <main>
+      <div id="aviso" class="aviso" role="alert" hidden></div>
+
+      <section id="progreso" class="tarjeta" hidden>
+        <p id="progreso-texto" aria-live="polite">Preparando…</p>
+        <progress id="progreso-barra"></progress>
+      </section>
+
+      <!-- Pantalla "Convertir" -->
+      <section id="convertir">
+        <section id="carga" class="tarjeta">
+          <h2>1. Pasa una foto de la planilla</h2>
+          <div id="zona" class="zona">
+            <label class="boton principal">
+              Tomar foto
+              <input
+                id="camara"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                capture="environment"
+                hidden
+              />
+            </label>
+            <label class="boton">
+              Elegir foto
+              <input id="archivo" type="file" accept="image/jpeg,image/png,image/webp" hidden />
+            </label>
+            <p class="ayuda">o arrastra la foto aquí. De frente, con buena luz y con la fecha dentro.</p>
+          </div>
+        </section>
+
+        <section id="vista" class="tarjeta" hidden>
+          <h2>2. Revisa y corrige</h2>
+          <div class="campo-fecha">
+            <label for="fecha">Fecha de la planilla</label>
+            <input id="fecha" type="date" required />
+            <small id="fecha-leida"></small>
+          </div>
+          <p class="leyenda">
+            <span class="muestra baja_confianza"></span> lectura dudosa
+            <span class="muestra invalida"></span> no cumple el tipo · toca una celda para corregirla
+          </p>
+          <div class="tabla-contenedor">
+            <table id="tabla"></table>
+          </div>
+          <div class="acciones">
+            <button id="anadir-fila" type="button">Añadir fila</button>
+            <button id="ver-cuadricula" type="button">Ver cuadrícula detectada</button>
+          </div>
+          <div id="cuadricula" class="cuadricula" hidden></div>
+          <div class="acciones">
+            <button id="anadir-foto" type="button" class="principal">Añadir y pasar otra foto</button>
+            <button id="descartar-foto" type="button">Descartar esta foto</button>
+          </div>
+        </section>
+
+        <section id="lote" class="tarjeta">
+          <h2>3. Fotos añadidas</h2>
+          <ol id="lote-lista" class="lote-lista"></ol>
+          <p id="lote-vacio" class="ayuda">Todavía no añadiste ninguna foto.</p>
+          <div class="acciones">
+            <button id="exportar" type="button" class="principal" disabled>Exportar Excel</button>
+            <button id="empezar" type="button">Empezar de nuevo</button>
+          </div>
+        </section>
+      </section>
+
+      <!-- Pantalla "Crear plantilla" -->
+      <section id="crear-plantilla" class="tarjeta" hidden>
+        <h2>Crear plantilla</h2>
+        <p class="ayuda">
+          Sube una foto de ejemplo: se detectan las columnas y se propone el nombre desde el encabezado.
+        </p>
+        <div class="acciones">
+          <label class="boton principal">
+            Foto de ejemplo
+            <input id="editor-foto" type="file" accept="image/jpeg,image/png,image/webp" hidden />
+          </label>
+          <label class="boton">
+            Importar plantilla.json
+            <input id="editor-importar" type="file" accept="application/json,.json" hidden />
+          </label>
+          <a class="boton" href="#">Volver</a>
+        </div>
+        <div id="editor-formulario" hidden>
+          <div class="campos">
+            <label>Id (sin espacios) <input id="editor-id" pattern="[a-z0-9_-]+" required /></label>
+            <label>Nombre <input id="editor-nombre" required /></label>
+          </div>
+          <div class="tabla-contenedor"><table id="editor-columnas"></table></div>
+          <div class="acciones">
+            <button id="editor-usar" type="button" class="principal">Usar en este navegador</button>
+            <button id="editor-descargar" type="button">Descargar plantilla.json</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="pie">
+      Tus fotos no salen de este dispositivo. El lote no se guarda: exporta antes de cerrar. ·
+      <a href="#crear-plantilla">Crear plantilla</a>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

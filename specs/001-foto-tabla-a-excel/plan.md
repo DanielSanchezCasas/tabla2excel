@@ -14,15 +14,16 @@ Se publica en GitHub Pages (público) con una GitHub Action en cada push a `main
 - **Lenguaje/Versión**: TypeScript 5, Node 20+ (solo desarrollo/build)
 - **Gestor de paquetes**: pnpm (no hay lockfile previo)
 - **Build**: Vite (sitio estático en `dist/`)
-- **Dependencias de ejecución** (4, justificadas en research.md):
-  - `tesseract.js` v5 — OCR en el navegador (WebAssembly, Web Worker)
-  - `@techstark/opencv-js` — perspectiva y cuadrícula, en un Web Worker
+- **Dependencias de ejecución** (justificadas en research.md):
+  - `tesseract.js` v7 + `@tesseract.js-data/spa` — OCR en el navegador (WebAssembly, Web Workers)
+  - `@techstark/opencv-js` 5 — perspectiva y cuadrícula; se carga en el hilo principal solo al procesar la primera foto (research.md, Decisión 2)
   - `exceljs` — `.xlsx` con estilos, comentarios y varias hojas
-  - `vite-plugin-pwa` — modo sin conexión e instalable
+- **Dependencias de desarrollo**: `vite` + `vite-plugin-pwa` (build y modo sin conexión), `typescript`, `vitest` (unitarias), `@playwright/test` (e2e en navegadores reales), `pngjs` (escribir las fixtures sintéticas), `prettier` (formato)
   - Sin framework de UI: HTML + TS ligero (principio II).
 - **Recursos autoalojados** (principio VII): `spa.traineddata.gz` de **4.0.0_best_int** (paquete `@tesseract.js-data/spa`, 2,1 MB), worker y core de Tesseract SOLO variantes LSTM (`tesseract-core-simd-lstm` + `tesseract-core-lstm` de respaldo, ~2,9 MB cada `.wasm`), `opencv.js` en `public/vendor/`
 - **Almacenamiento**: el lote vive solo en memoria (RF-016, sin persistencia); `localStorage` solo para la plantilla elegida y plantillas propias (Historia 5)
-- **Pruebas**: Vitest (unitarias: conversión, validación, lote, cuadrícula sobre fixtures, Excel) + Playwright (e2e con fixtures sintéticas, Chromium y WebKit móvil)
+- **Pruebas**: Vitest (unitarias: conversión, validación, lote, cuadrícula sobre fixtures, Excel) + Playwright (e2e con fixtures sintéticas, Chromium y WebKit móvil; Firefox opcional con `E2E_FIREFOX=1` porque el Firefox de Playwright no arranca en algunas versiones de macOS)
+- **Seguridad**: CSP en el build con `connect-src 'self'` (nada sale del sitio). `script-src` incluye `'unsafe-eval'` porque OpenCV.js (embind) genera funciones con `new Function`; la página no inserta HTML de terceros (solo `textContent`)
 - **Hosting**: GitHub Pages, público (`https://<usuario>.github.io/tabla2excel/`)
 - **Rendimiento**: reducir imagen a ~2000 px de lado mayor; OCR solo de 7 columnas × ~25 filas ≈ 175 celdas + fecha, 2 workers en paralelo
 - **Restricciones**: nada de red salvo cargar el propio sitio (CSP `connect-src 'self'`); imagen original intacta; fotos reales nunca en el repo
@@ -66,10 +67,11 @@ src/
 │   ├── plantilla.ts      # tipos + validación + carga (URL ?plantilla=, localStorage, defecto)
 │   ├── conversion.ts     # texto → número/fecha; guiones → vacío; fecha "31 octubre 2026"
 │   ├── validacion.ts     # estados de celda
-│   ├── lote.ts           # Lote: añadir (máx. 10), quitar + renumerar, filas vacías fuera
+│   ├── foto.ts           # FotoProcesada, Fila, filas vacías fuera, nueva fila
+│   ├── lote.ts           # Lote: añadir (máx. 10), quitar + renumerar
 │   └── excel.ts          # ExcelJS: hoja Datos + hoja Revisión
 ├── vision/
-│   ├── vision.worker.ts  # OpenCV.js en Web Worker
+│   ├── opencv.ts         # carga perezosa de vendor/opencv.js
 │   ├── perspectiva.ts
 │   └── cuadricula.ts     # celdas + región de la fecha (franja sobre la tabla)
 ├── ocr/
@@ -93,7 +95,7 @@ vite.config.ts · package.json · pnpm-lock.yaml · README.md
 
 ## Flujo (en el navegador, por foto)
 1. **Cargar** una imagen, aplicar orientación EXIF, reducir a ~2000 px.
-2. **Visión** (worker): gris → umbral adaptativo → cuadrilátero mayor → `warpPerspective` →
+2. **Visión** (hilo principal, OpenCV cargado bajo demanda): gris → umbral adaptativo → cuadrilátero mayor → `warpPerspective` →
    morfología horizontal/vertical → líneas → celdas. Ignora todo fuera del borde exterior.
    Debe salir el número de columnas de la plantilla (14); si no, error claro.
 3. **Fecha**: recorte de la franja sobre el borde superior de la tabla → OCR → `conversion.fecha`

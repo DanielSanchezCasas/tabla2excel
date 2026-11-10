@@ -1,0 +1,7 @@
+node_modules/
+dist/
+public/vendor/
+pnpm-lock.yaml
+specs/
+.specify/
+.claude/

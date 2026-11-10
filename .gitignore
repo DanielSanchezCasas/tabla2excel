@@ -1,0 +1,10 @@
+node_modules/
+dist/
+public/vendor/
+test-results/
+playwright-report/
+*.log
+.env*
+.DS_Store
+# Fotos reales: tienen nombres de socios y el repositorio es público
+fotos-reales/

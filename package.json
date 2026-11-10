@@ -1,0 +1,32 @@
+{
+  "name": "tabla2excel",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@12.8.1",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build && node scripts/informe-tamano.mjs",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "fixtures": "node tests/fixtures/generar.mjs",
+    "postinstall": "node scripts/copiar-vendor.mjs"
+  },
+  "dependencies": {
+    "@techstark/opencv-js": "5.0.0-release.1",
+    "@tesseract.js-data/spa": "1.0.0",
+    "exceljs": "4.4.0",
+    "tesseract.js": "7.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0",
+    "@types/pngjs": "^6.0.5",
+    "pngjs": "7.0.0",
+    "prettier": "^3.9.10",
+    "typescript": "5.9.3",
+    "vite": "8.3.7",
+    "vite-plugin-pwa": "2.0.0",
+    "vitest": "5.1.0"
+  }
+}
